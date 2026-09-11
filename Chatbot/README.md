@@ -29,9 +29,8 @@ Copy `.env.example` to `.env` and paste a **new** key from
 GEMINI_API_KEY=your_key_here
 ```
 
-You can also paste the key in the sidebar. Do not commit `.env`. Later
-sessions: activate the venv again, then run the app. Deactivate with
-`deactivate`.
+Do not commit `.env`. Later sessions: activate the venv again, then run
+the app. Deactivate with `deactivate`.
 
 If Gemini returns **403 / leaked**, that key is already public (for
 example committed in git). Google will not accept it again: create a

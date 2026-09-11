@@ -8,10 +8,10 @@ MODEL = "gemini-3.6-flash"
 KEY_URL = "https://aistudio.google.com/apikey"
 
 load_dotenv(find_dotenv())
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 st.set_page_config(page_title="Chatbot", page_icon="💬")
 st.title("Chatbot")
-st.caption(f"Gemini (`{MODEL}`), same client as the LLM notebook.")
 
 
 def gemini_error(exc: Exception) -> str:
@@ -19,51 +19,40 @@ def gemini_error(exc: Exception) -> str:
     if "leaked" in text.lower():
         return (
             "This API key was reported as leaked and Google disabled it. "
-            f"Create a **new** key at [{KEY_URL}]({KEY_URL}), then paste it "
-            "in the sidebar or in `.env` as `GEMINI_API_KEY`."
+            f"Create a **new** key at [{KEY_URL}]({KEY_URL}) and put it in "
+            "`.env` as `GEMINI_API_KEY`."
         )
     return f"Could not call Gemini: {exc}"
 
 
-def reset_chat(api_key: str) -> None:
-    client = genai.Client(api_key=api_key)
+def reset_chat() -> None:
+    client = genai.Client(api_key=GEMINI_API_KEY)
     st.session_state.client = client
     st.session_state.chat = client.chats.create(model=MODEL)
     st.session_state.messages = []
-    st.session_state.active_api_key = api_key
 
 
-if "gemini_api_key" not in st.session_state:
-    st.session_state.gemini_api_key = os.getenv("GEMINI_API_KEY") or ""
-
-with st.sidebar:
-    st.markdown(f"**Model:** `{MODEL}`")
-    api_key = st.text_input(
-        "GEMINI_API_KEY",
-        type="password",
-        key="gemini_api_key",
-        help=f"Create a key at {KEY_URL}. Do not commit it.",
-    )
-    if st.button("New chat"):
-        if api_key:
-            reset_chat(api_key)
-        st.rerun()
-
-if not api_key:
+if not GEMINI_API_KEY:
     st.error(
         f"Missing `GEMINI_API_KEY`. Create a key at [{KEY_URL}]({KEY_URL}) "
-        "and paste it in the sidebar, or put it in `.env`."
+        "and put it in `.env`."
     )
     st.stop()
 
-if st.session_state.get("active_api_key") != api_key:
-    reset_chat(api_key)
+if "chat" not in st.session_state:
+    reset_chat()
+
+with st.sidebar:
+    st.markdown(f"**Modelo:** `{MODEL}`")
+    if st.button("Nuevo chat"):
+        reset_chat()
+        st.rerun()
 
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-prompt = st.chat_input("Write a message")
+prompt = st.chat_input("Escribe un mensaje")
 if prompt:
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
