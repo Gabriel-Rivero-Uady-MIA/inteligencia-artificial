@@ -59,8 +59,11 @@ de GAN). Clustering, Perceptrón, Visión, LLMs y RAG tienen `Notebooks/`.
 
 ## Chatbot
 
-Interfaz Streamlit que habla con **Gemini** (`gemini-3.6-flash`). Necesita una
-clave `GEMINI_API_KEY` de [Google AI Studio](https://aistudio.google.com/apikey).
+Interfaz Streamlit que habla con **Gemini** (`gemini-3.6-flash`) o
+**OpenAI** (`gpt-5.6-luna`, `gpt-4o-mini`). Elige proveedor y modelo en
+la barra lateral. Necesita `GEMINI_API_KEY` de
+[Google AI Studio](https://aistudio.google.com/apikey) y/o
+`OPENAI_API_KEY` de [OpenAI](https://platform.openai.com/api-keys).
 
 ```bash
 cd Chatbot
